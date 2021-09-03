@@ -1,4 +1,4 @@
-package com.study.ecommerce.jwt;
+package com.study.ecommerce.oauth;
 
 import com.study.ecommerce.model.user.UserDetailsCustom;
 import io.jsonwebtoken.*;
@@ -15,7 +15,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwtTokenUtil implements Serializable {
+public class TokenUtil implements Serializable {
 
     private static final long serialVersionUID = -2550185165626007488L;
 

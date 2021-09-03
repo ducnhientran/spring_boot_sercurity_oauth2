@@ -1,4 +1,4 @@
-package com.study.ecommerce.jwt;
+package com.study.ecommerce.oauth;
 
 import com.study.ecommerce.entity.EcommerceUser;
 import com.study.ecommerce.entity.Permission;
@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class JwtUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceCustom implements UserDetailsService {
 
     @Autowired
     EcommerceUserRepository ecommerceUserRepository ;

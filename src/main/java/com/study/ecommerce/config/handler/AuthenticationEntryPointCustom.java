@@ -1,4 +1,4 @@
-package com.study.ecommerce.config;
+package com.study.ecommerce.config.handler;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

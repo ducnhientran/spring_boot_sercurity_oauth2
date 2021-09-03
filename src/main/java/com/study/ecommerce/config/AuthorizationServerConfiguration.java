@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableAuthorizationServer
-public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
     private String GRANT_TYPE_PASSWORD = "password";
     private String AUTHORIZATION_CODE = "authorization_code";
     private String REFRESH_TOKEN = "refresh_token";

@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         basePackages = {"com.study.ecommerce.repository"})
-public class DatabaseConfig {
+public class DatabaseConfiguration {
 
 
     @Bean

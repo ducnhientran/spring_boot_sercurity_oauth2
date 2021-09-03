@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class ExceptionHandlerAdvise {
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ResponseData> handleRuntimeException(RuntimeException ex) {
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ResponseData> handleBadRequestException(BadRequestException ex) {
         ResponseData responseData = ResponseData.builder()
                 .message(ex.getMessage())
                 .status(HttpStatus.BAD_REQUEST.value())

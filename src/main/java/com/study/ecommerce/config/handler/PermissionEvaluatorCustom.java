@@ -1,4 +1,4 @@
-package com.study.ecommerce.config.evaluator;
+package com.study.ecommerce.config.handler;
 
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -7,7 +7,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.Serializable;
 
-public class PermissionEvaluatorConfig implements PermissionEvaluator {
+public class PermissionEvaluatorCustom implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permission) {
         if (ObjectUtils.isEmpty(auth) || ObjectUtils.isEmpty(targetDomainObject) || !(permission instanceof String)){
