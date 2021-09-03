@@ -24,7 +24,6 @@ public class PermissionEvaluatorConfig implements PermissionEvaluator {
         return hasPrivilege(auth, targetType.toUpperCase(),permission.toString().toUpperCase());
     }
 
-
     private boolean hasPrivilege(Authentication auth, String targetType, String permission) {
         for (GrantedAuthority grantedAuth : auth.getAuthorities()) {
             String rolePermission = grantedAuth.getAuthority();

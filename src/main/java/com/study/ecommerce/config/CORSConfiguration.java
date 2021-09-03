@@ -13,7 +13,7 @@ public class CORSConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*/*")
+                        .allowedOrigins("*/*")// URL allows access
                         .allowedMethods("GET","POST","PUT", "DELETE", "OPTIONS", "PATCH","TRACE", "HEAD")
                         .allowedHeaders("*/*")
                         .allowCredentials(true).maxAge(3600);

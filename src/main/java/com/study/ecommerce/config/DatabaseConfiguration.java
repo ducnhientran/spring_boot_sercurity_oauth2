@@ -19,7 +19,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactory", transactionManagerRef = "transactionManager",
+@EnableJpaRepositories(
         basePackages = {"com.study.ecommerce.repository"})
 public class DatabaseConfig {
 

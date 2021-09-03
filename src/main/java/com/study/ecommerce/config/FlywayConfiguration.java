@@ -14,8 +14,12 @@ public class FlywayConfig {
     private DataSource dataSource;
     @Bean
     public Flyway flyway() {
-        Flyway flyway = Flyway.configure().locations("classpath:db/migration").dataSource(dataSource).baselineOnMigrate(true)
-                .baselineVersion("0").outOfOrder(false).load();
+        Flyway flyway = Flyway.configure()
+                .locations("classpath:db/migration")
+                .dataSource(dataSource)
+                .baselineOnMigrate(true)
+                .baselineVersion("0")
+                .outOfOrder(false).load();
         flyway.repair();
         flyway.migrate();
         return flyway;

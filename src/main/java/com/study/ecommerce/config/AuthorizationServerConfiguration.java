@@ -1,6 +1,6 @@
 package com.study.ecommerce.config;
 
-import com.study.ecommerce.jwt.JwtUserDetailsService;
+import com.study.ecommerce.oauth.UserDetailsServiceCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -17,10 +15,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+
+import javax.sql.DataSource;
 
 
 @Configuration
@@ -35,8 +34,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Value("${spring.oauth2.client.id}")
     private String clientId;
+
     @Value("${spring.oauth2.client.secret}")
-    private String clientPass;
+    private String clientSecret;
 
     @Value("${config.oauth2.tokenTimeout}")
     private int expiration;
@@ -55,17 +55,19 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtUserDetailsService jwtUserDetailsService;
+    private UserDetailsServiceCustom userDetailsServiceCustom;
 
     @Autowired
     private ClientDetailsService clientDetailsService;
 
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient(clientId)
-                .secret(passwordEncoder.encode(clientPass))
+                .secret(passwordEncoder.encode(clientSecret))
                 .authorizedGrantTypes(GRANT_TYPE_PASSWORD, AUTHORIZATION_CODE, REFRESH_TOKEN)
                 .scopes(SCOPE_READ, SCOPE_WRITE)
                 .resourceIds("resource_id")
@@ -100,6 +102,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Bean
+    public JdbcTokenStore jdbcTokenStore() {
+        return new JdbcTokenStore(dataSource);
+    }
+
+    @Bean
     @Primary
     public DefaultTokenServices tokenServices() {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
@@ -119,7 +126,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
             .authenticationManager(authenticationManager)
-            .userDetailsService(jwtUserDetailsService)
+            .userDetailsService(userDetailsServiceCustom)
             .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
             .tokenStore(tokenStore())
             .tokenServices(tokenServices())

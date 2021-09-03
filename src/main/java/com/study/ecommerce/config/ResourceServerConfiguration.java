@@ -1,18 +1,14 @@
 package com.study.ecommerce.config;
 
 
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -36,6 +32,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Autowired
     JwtAccessTokenConverter accessTokenConverter;
 
+    @Autowired
+    AuthenticationEntryPointCustom authenticationEntryPointCustom;
+
+    @Autowired
+    OAuth2AccessDeniedHandlerCustom oauth2AccessDeniedHandlerCustom;
+
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources.resourceId("resource_id")
@@ -46,7 +48,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-            .anonymous().disable()
+             .anonymous().disable()
+            .exceptionHandling().authenticationEntryPoint(authenticationEntryPointCustom)
+            .and()
             .authorizeRequests()
             .antMatchers("/login", "/swagger-ui/**"
                     , "/swagger-ui.html/**"
@@ -56,10 +60,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                     , "/v1/api-docs"
                     , "/webjars/**"
                     , "/swagger-resources/**"
+                    , "/actuator/**"
+                    , "/api-docs/**"
              )
             .permitAll()
             .antMatchers(HttpMethod.OPTIONS).permitAll()
             .anyRequest().authenticated()
-            .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
+            .and().exceptionHandling().accessDeniedHandler(oauth2AccessDeniedHandlerCustom);
     }
 }
